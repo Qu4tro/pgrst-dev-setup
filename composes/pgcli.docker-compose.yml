@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+  pgcli:
+    image: pygmy/pgcli
+    command: postgres://superuser:superuserpass@postgres:5432/dbname
+    networks:
+      - pgrst-dev_network
+    volumes: 
+      - ../data/tool_data/pgcli/config:/root/.config/pgcli/config
+
+networks:
+  pgrst-dev_network:
+    external: true

@@ -1,0 +1,16 @@
+[main]
+prompt = 'pgrst-dev> '
+timing = True
+row_limit = 500
+null_string = 'ø'
+table_format = psql
+multi_line_mode = safe
+
+
+[data_formats]
+decimal = ",d"
+
+
+# Named queries are queries you can execute by name.
+[named queries]
+

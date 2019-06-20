@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+  psql:
+    image: jbergknoff/postgresql-client
+    command: postgres://superuser:superuserpass@postgres:5432/dbname
+    networks:
+      - pgrst-dev_network
+    volumes: 
+      - ../data/tool_data/psql/psqlrc:/root/.psqlrc
+
+networks:
+  pgrst-dev_network:
+    external: true

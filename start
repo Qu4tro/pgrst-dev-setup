@@ -1,0 +1,55 @@
+#!/bin/bash
+
+cd "$(dirname "$0")/composes" || exit 2
+
+function abort {
+  echo "$1"; exit 1
+}
+
+RUNNING=$(docker-compose -p pgrst-dev ps -q | wc -l)
+while [[ "$RUNNING" -eq "0" && "$WAIT" = 'yes' ]]; do 
+  echo "Waiting for pgrst-dev compose project to start"
+  sleep 1
+  RUNNING=$(docker-compose -p pgrst-dev ps -q | wc -l)
+done
+
+function finish {
+  if [[ -z "$1" && "$RUNNING" -eq "0" ]]; then
+    docker-compose -p pgrst-dev logs --no-color --timestamps | sort -k3 > "../logs-$(date +%Y%m%d%H%M%S).txt"
+    docker-compose -p pgrst-dev down
+  fi
+}
+# shellcheck disable=SC2064
+trap "finish $1" EXIT
+
+
+function up {
+  docker-compose -f "docker-compose.yml" -p pgrst-dev up 
+}
+
+function tool_up {
+  # run service described in docker compose. 
+  # Flags:remove container after use; expose ports described in service
+  docker-compose -f "$1.docker-compose.yml" run --rm --service-ports "$1"
+}
+
+
+function keyword_commands {
+  case "$1" in
+    ("with-nothing") docker-compose down -v --rmi all --remove-orphans ;;
+    ("tmux")         tmuxp load .tmuxp_session.yaml ;;
+    (*)      return 1
+  esac
+
+  return 0;
+}
+
+[[ -z "$1" && "$RUNNING" -ne "0" ]] && abort "Server is already running"
+if [ -z "$1" ]; then 
+  up
+else 
+  if ! keyword_commands "$1"; then 
+    [[ "$RUNNING" -eq "0" ]] && abort "You need to run without args first"
+    tool_up "$1"
+  fi
+fi

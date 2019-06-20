@@ -1,0 +1,27 @@
+session_name: pgrst-dev
+start_directory: ./
+environment:
+  WAIT: 'yes'
+windows:
+- window_name: pg & pgrst
+  focus: True
+  panes:
+  - WAIT=no ./start
+- window_name: pgcli
+  panes:
+  - ./start pgcli
+
+- window_name: psql
+  panes:
+  - ./start psql
+
+- window_name: http-prompt
+  panes:
+  - ./start http-prompt
+
+- window_name: pgadmin4 & swagger & mitmweb
+  layout: main-horizontal
+  panes:
+  - ./start pgadmin4
+  - ./start swagger
+  - ./start mitmproxy

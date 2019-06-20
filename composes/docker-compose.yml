@@ -1,0 +1,39 @@
+version: '2'
+services:
+  postgres:
+    image: postgres:latest
+    command: postgres -c log_statement=all
+    ports:
+      - "5000:5432"
+    environment:
+      - POSTGRES_USER=superuser
+      - POSTGRES_PASSWORD=superuserpass
+      - POSTGRES_DB=dbname
+
+    networks:
+      - network
+
+    volumes:
+      - ../data/db.sql:/docker-entrypoint-initdb.d/db.sql
+
+  postgrest:
+    image: postgrest/postgrest
+    networks:
+      - network
+    volumes:
+      - ../data/postgrest.conf:/etc/postgrest.conf
+
+  mitmproxy:
+    image: mitmproxy/mitmproxy
+    networks:
+      - network
+    entrypoint: mitmdump
+    command: -s /root/log-requests.py --mode="reverse:http://postgrest:3000" 
+    ports:
+      - "5001:8080"
+    volumes:
+      - ../scripts/log-requests.py:/root/log-requests.py
+
+networks:
+  network:
+    driver: bridge

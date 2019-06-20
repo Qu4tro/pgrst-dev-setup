@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  mitmproxy:
+    image: mitmproxy/mitmproxy
+    command: mitmweb --web-iface "0.0.0.0" --mode="reverse:http://mitmproxy:8080"
+    networks:
+      - pgrst-dev_network
+    ports:
+      - "5002:8080"
+      - "5005:8081"
+
+networks:
+  pgrst-dev_network:
+    external: true

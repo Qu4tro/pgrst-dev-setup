@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+  pgadmin4:
+    image: dpage/pgadmin4
+    networks:
+      - pgrst-dev_network
+    ports:
+      - "5003:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=email
+      - PGADMIN_DEFAULT_PASSWORD=password
+    volumes:
+      - ../data/tool_data/pgadmin4/servers.json:/pgadmin4/servers.json
+      - ../data/tool_data/pgadmin4/config_local.py:/pgadmin4/config_local.py
+
+networks:
+  pgrst-dev_network:
+    external: true

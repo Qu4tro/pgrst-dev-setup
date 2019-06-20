@@ -1,0 +1,2 @@
+\timing
+\pset null 'ø'

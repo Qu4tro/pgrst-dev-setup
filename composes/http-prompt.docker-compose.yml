@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+  http-prompt:
+    image: pataquets/http-prompt
+    command: mitmproxy:8080
+    networks:
+      - pgrst-dev_network
+    volumes:
+      - ../data/tool_data/http-prompt/config.py:/root/.config/http-prompt/config.py
+
+networks:
+  pgrst-dev_network:
+    external: true
