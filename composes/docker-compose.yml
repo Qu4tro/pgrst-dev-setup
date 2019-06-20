@@ -1,7 +1,9 @@
 version: '2'
 services:
   postgres:
-    image: postgres:latest
+    build:
+      context: ../
+      dockerfile: composes/dockerfiles/plpython.Dockerfile
     command: postgres -c log_statement=all
     ports:
       - "5000:5432"
