@@ -1,22 +1,27 @@
 #!/bin/bash
 
-cd "$(dirname "$0")/composes" || exit 2
+cd "$(dirname "$0")" || exit 2
+
+MAIN_COMPOSE='composes/docker-compose.yml'
 
 function abort {
   echo "$1"; exit 1
 }
+function running-containers {
+  docker-compose -f $MAIN_COMPOSE -p pgrst-dev ps -q | wc -l
+}
 
-RUNNING=$(docker-compose -p pgrst-dev ps -q | wc -l)
+RUNNING=$(running-containers)
 while [[ "$RUNNING" -eq "0" && "$WAIT" = 'yes' ]]; do 
   echo "Waiting for pgrst-dev compose project to start"
   sleep 1
-  RUNNING=$(docker-compose -p pgrst-dev ps -q | wc -l)
+  RUNNING=$(running-containers)
 done
 
 function finish {
   if [[ -z "$1" && "$RUNNING" -eq "0" ]]; then
-    docker-compose -p pgrst-dev logs --no-color --timestamps | sort -k3 > "../logs-$(date +%Y%m%d%H%M%S).txt"
-    docker-compose -p pgrst-dev down
+    docker-compose -f "$MAIN_COMPOSE" -p pgrst-dev logs --no-color --timestamps | sort -k3 > "logs-$(date +%Y%m%d%H%M%S).txt"
+    docker-compose -f "$MAIN_COMPOSE" -p pgrst-dev down
   fi
 }
 # shellcheck disable=SC2064
@@ -24,13 +29,13 @@ trap "finish $1" EXIT
 
 
 function up {
-  docker-compose -f "docker-compose.yml" -p pgrst-dev up 
+  docker-compose -f "$MAIN_COMPOSE" -p pgrst-dev up --build
 }
 
 function tool_up {
   # run service described in docker compose. 
   # Flags:remove container after use; expose ports described in service
-  docker-compose -f "$1.docker-compose.yml" run --rm --service-ports "$1"
+  docker-compose -f "composes/$1.docker-compose.yml" run --rm --service-ports "$1"
 }
 
 
