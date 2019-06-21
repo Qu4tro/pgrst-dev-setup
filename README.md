@@ -24,7 +24,7 @@ Note: All commands attach to the terminal. If you want to avoid using multiple t
 ./start
 ```
 Starts postgres, postgrest and mitmdump (for comprehensive logging). The database is served on the port 5000 and the server on 5001.
-Dumps a `logs.txt` with logs from both containers after exiting.
+Dumps a `logs.txt` with logs from all these three containers after exiting.
 
 ---
 ```
@@ -65,7 +65,7 @@ Run tmuxp session
 
   - ### mitmproxy
       Starts a reverse proxy on port 5002  
-      Starts a mitmweb on port 5005
+      Starts a mitmweb instance on port 5005
 
 
 ## Contributing
