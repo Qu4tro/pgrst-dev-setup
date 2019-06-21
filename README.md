@@ -62,7 +62,6 @@ Run tmuxp session
   - ### swagger
       Starts a server on port 5003  
       Points by default to postgrest proxy server  
-      [BUG: base url is wrong and i have no idea how to change it to correctly do requests]
 
   - ### mitmproxy
       Starts a reverse proxy on port 5002  
