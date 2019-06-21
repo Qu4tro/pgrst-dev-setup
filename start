@@ -1,60 +1,30 @@
 #!/bin/bash
 
-cd "$(dirname "$0")" || exit 2
+PWD="$( cd "$(dirname "$0")" || exit 1 ; pwd -P )"
+LOG_FILE="$PWD/$(date +%Y%m%d%H%M%S).log"
 
-MAIN_COMPOSE='composes/docker-compose.yml'
+export COMPOSE_PROJECT_NAME='pgrst-dev'
+export COMPOSE_FILE="$PWD/composes/docker-compose.yml"
+export TOOL_COMPOSE_FILE="$PWD/composes/$1.docker-compose.yml"
 
-function abort {
-  echo "$1"; exit 1
+RUNNING="$(docker-compose ps -q | wc -l)"
+
+
+case "$1" in
+  ('') 
+    [[ "$RUNNING" -ne 0 ]] && echo 'Containers are already running' && exit 1
+    trap "on_exit" EXIT && docker-compose up --build ;;
+
+  ("with-nothing") 
+    docker-compose down --volumes --rmi all --remove-orphans ;;
+
+  (*)              
+    [[ "$RUNNING" -eq 0 ]] && echo 'No containers running. Run this script without arguments to start them.' && exit 1
+    docker-compose -f "$TOOL_COMPOSE_FILE" run --rm --service-ports "$1" ;;
+esac
+
+
+function on_exit {
+  docker-compose logs --no-color --timestamps | sort -k3 > "$LOG_FILE"
+  docker-compose down
 }
-function running-containers {
-  docker-compose -f $MAIN_COMPOSE -p pgrst-dev ps -q | wc -l
-}
-
-RUNNING=$(running-containers)
-while [[ "$RUNNING" -eq "0" && "$WAIT" = 'yes' ]]; do 
-  echo "Waiting for pgrst-dev compose project to start"
-  sleep 1
-  RUNNING=$(running-containers)
-done
-
-function finish {
-  if [[ -z "$1" && "$RUNNING" -eq "0" ]]; then
-    docker-compose -f "$MAIN_COMPOSE" -p pgrst-dev logs --no-color --timestamps | sort -k3 > "logs-$(date +%Y%m%d%H%M%S).txt"
-    docker-compose -f "$MAIN_COMPOSE" -p pgrst-dev down
-  fi
-}
-# shellcheck disable=SC2064
-trap "finish $1" EXIT
-
-
-function up {
-  docker-compose -f "$MAIN_COMPOSE" -p pgrst-dev up --build
-}
-
-function tool_up {
-  # run service described in docker compose. 
-  # Flags:remove container after use; expose ports described in service
-  docker-compose -f "composes/$1.docker-compose.yml" run --rm --service-ports "$1"
-}
-
-
-function keyword_commands {
-  case "$1" in
-    ("with-nothing") docker-compose down -v --rmi all --remove-orphans ;;
-    ("tmux")         tmuxp load .tmuxp_session.yaml ;;
-    (*)      return 1
-  esac
-
-  return 0;
-}
-
-[[ -z "$1" && "$RUNNING" -ne "0" ]] && abort "Server is already running"
-if [ -z "$1" ]; then 
-  up
-else 
-  if ! keyword_commands "$1"; then 
-    [[ "$RUNNING" -eq "0" ]] && abort "You need to run without args first"
-    tool_up "$1"
-  fi
-fi

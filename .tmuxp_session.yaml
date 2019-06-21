@@ -1,25 +1,38 @@
 session_name: pgrst-dev
+
 start_directory: ./
+
 environment:
-  WAIT: 'yes'
+  COMPOSE_PROJECT_NAME: 'pgrst-dev'
+  COMPOSE_FILE: "./composes/docker-compose.yml"
+
 windows:
 - window_name: pg & pgrst
   focus: True
   panes:
-  - WAIT=no ./start
+    - ./start
+
 - window_name: pgcli
+  shell_command_before:
+    - while [[ "$(docker-compose ps -q | wc -l)" -eq "0" ]]; do sleep 1; done
   panes:
   - ./start pgcli
 
 - window_name: psql
+  shell_command_before:
+    - while [[ "$(docker-compose ps -q | wc -l)" -eq "0" ]]; do sleep 1; done
   panes:
   - ./start psql
 
 - window_name: http-prompt
+  shell_command_before:
+    - while [[ "$(docker-compose ps -q | wc -l)" -eq "0" ]]; do sleep 1; done
   panes:
   - ./start http-prompt
 
 - window_name: pgadmin4 & swagger & mitmweb
+  shell_command_before:
+    - while [[ "$(docker-compose ps -q | wc -l)" -eq "0" ]]; do sleep 1; done
   layout: main-horizontal
   panes:
   - ./start pgadmin4
