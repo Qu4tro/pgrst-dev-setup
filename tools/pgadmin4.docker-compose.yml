@@ -1,5 +1,4 @@
 version: '2'
-
 services:
   pgadmin4:
     image: dpage/pgadmin4
@@ -11,8 +10,8 @@ services:
       - PGADMIN_DEFAULT_EMAIL=email
       - PGADMIN_DEFAULT_PASSWORD=password
     volumes:
-      - ../data/tool_data/pgadmin4/servers.json:/pgadmin4/servers.json
-      - ../data/tool_data/pgadmin4/config_local.py:/pgadmin4/config_local.py
+      - ./configurations/pgadmin4/servers.json:/pgadmin4/servers.json
+      - ./configurations/pgadmin4/config_local.py:/pgadmin4/config_local.py
 
 networks:
   pgrst-dev_network:

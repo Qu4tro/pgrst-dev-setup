@@ -14,25 +14,25 @@ services:
       - network
 
     volumes:
-      - ../data/db.sql:/docker-entrypoint-initdb.d/db.sql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   postgrest:
     image: postgrest/postgrest
     networks:
       - network
     volumes:
-      - ../data/postgrest.conf:/etc/postgrest.conf
+      - ./postgrest.conf:/etc/postgrest.conf
 
   mitmproxy:
     image: mitmproxy/mitmproxy
     networks:
       - network
     entrypoint: mitmdump
-    command: -s /root/log-requests.py --mode="reverse:http://postgrest:3000" 
+    command: -s /root/middleware.py --mode="reverse:http://postgrest:3000" 
     ports:
       - "5001:8080"
     volumes:
-      - ../scripts/log-requests.py:/root/log-requests.py
+      - ./middleware.py:/root/middleware.py
 
 networks:
   network:

@@ -4,8 +4,8 @@ PWD="$( cd "$(dirname "$0")" || exit 1 ; pwd -P )"
 LOG_FILE="$PWD/$(date +%Y%m%d%H%M%S).log"
 
 export COMPOSE_PROJECT_NAME='pgrst-dev'
-export COMPOSE_FILE="$PWD/composes/docker-compose.yml"
-export TOOL_COMPOSE_FILE="$PWD/composes/$1.docker-compose.yml"
+export COMPOSE_FILE="$PWD/base/docker-compose.yml"
+export TOOL_COMPOSE_FILE="$PWD/tools/$1.docker-compose.yml"
 
 RUNNING="$(docker-compose ps -q | wc -l)"
 

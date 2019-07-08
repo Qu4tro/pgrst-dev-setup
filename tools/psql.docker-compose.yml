@@ -7,7 +7,7 @@ services:
     networks:
       - pgrst-dev_network
     volumes: 
-      - ../data/tool_data/psql/psqlrc:/root/.psqlrc
+      - ./configurations/psql/psqlrc:/root/.psqlrc
 
 networks:
   pgrst-dev_network:

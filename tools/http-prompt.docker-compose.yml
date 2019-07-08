@@ -7,7 +7,7 @@ services:
     networks:
       - pgrst-dev_network
     volumes:
-      - ../data/tool_data/http-prompt/config.py:/root/.config/http-prompt/config.py
+      - ./configurations/http-prompt/config.py:/root/.config/http-prompt/config.py
 
 networks:
   pgrst-dev_network:

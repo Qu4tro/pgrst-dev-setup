@@ -1,2 +1,1 @@
-
 SELECT 'DB init script';
