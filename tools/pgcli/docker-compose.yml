@@ -7,7 +7,7 @@ services:
     networks:
       - pgrst-dev_network
     volumes: 
-      - ./configurations/pgcli/config:/root/.config/pgcli/config
+      - ./conf/config:/root/.config/pgcli/config
 
 networks:
   pgrst-dev_network:

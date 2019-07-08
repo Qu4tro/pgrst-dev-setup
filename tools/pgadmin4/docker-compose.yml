@@ -10,8 +10,8 @@ services:
       - PGADMIN_DEFAULT_EMAIL=email
       - PGADMIN_DEFAULT_PASSWORD=password
     volumes:
-      - ./configurations/pgadmin4/servers.json:/pgadmin4/servers.json
-      - ./configurations/pgadmin4/config_local.py:/pgadmin4/config_local.py
+      - ./conf/servers.json:/pgadmin4/servers.json
+      - ./conf/config_local.py:/pgadmin4/config_local.py
 
 networks:
   pgrst-dev_network:
