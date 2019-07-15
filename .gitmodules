@@ -1,0 +1,6 @@
+[submodule "base/.postgrest"]
+	path = base/postgrest
+	url = git@github.com:PostgREST/postgrest.git
+[submodule "base/postgrest"]
+	path = base/postgrest
+	url = git@github.com:PostgREST/postgrest.git

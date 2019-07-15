@@ -17,10 +17,20 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   postgrest:
-    image: postgrest/postgrest
+    build:
+      context: .
+      args:
+        HOST_UID: ${HOST_UID}
+        HOST_GID: ${HOST_GID}
+    tty: true
+    stdin_open: true
     networks:
       - network
     volumes:
+      - passwd:/etc/
+      - ./.stack:/home/pgrst-user/.stack
+      - ./.stack-work:/home/pgrst-user/postgrest/.stack-work
+      - ./postgrest:/home/pgrst-user/postgrest
       - ./postgrest.conf:/etc/postgrest.conf
 
   mitmproxy:
@@ -37,3 +47,6 @@ services:
 networks:
   network:
     driver: bridge
+
+volumes:
+  passwd:
