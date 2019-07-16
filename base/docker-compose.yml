@@ -28,8 +28,8 @@ services:
       - network
     volumes:
       - passwd:/etc/
-      - ./.stack:/home/pgrst-user/.stack
-      - ./.stack-work:/home/pgrst-user/postgrest/.stack-work
+      - stack:/home/pgrst-user/.stack
+      - stack-work:/home/pgrst-user/postgrest/.stack-work
       - ./postgrest:/home/pgrst-user/postgrest
       - ./postgrest.conf:/etc/postgrest.conf
 
@@ -50,3 +50,5 @@ networks:
 
 volumes:
   passwd:
+  stack:
+  stack-work:

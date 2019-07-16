@@ -17,16 +17,14 @@ COPY postgrest/postgrest.cabal /home/pgrst-user/postgrest/postgrest.cabal
 COPY postgrest.conf /etc/postgrest.conf
 RUN mkdir -p /home/pgrst-user/postgrest/.stack-work /home/pgrst-user/.stack
 RUN chown pgrst-user:pgrst-user /home/pgrst-user/postgrest /home/pgrst-user/postgrest/.stack-work /home/pgrst-user/.stack /etc/postgrest.conf 
-#TODO: Remove stack work
 
 USER pgrst-user
 
 WORKDIR /home/pgrst-user/postgrest
-RUN stack build --only-dependencies --allow-different-user
-RUN chown pgrst-user:pgrst-user .stack-work stack.yaml.lock
+RUN stack build --only-dependencies
 
 COPY postgrest /home/pgrst-user/postgrest
-RUN sudo chown -R pgrst-user:pgrst-user /home/pgrst-user/postgrest
-RUN stack build --allow-different-user
+RUN sudo chown -R pgrst-user:pgrst-user .
+RUN stack build
 
-ENTRYPOINT ["/bin/sh", "-c", "find \"$(stack path --dist-dir)/stack-build-caches\" /etc/postgrest.conf | grep postgrest | entr -rc -- stack run /etc/postgrest.conf"]
+ENTRYPOINT ["/bin/sh", "-c", "find \"$(stack path --dist-dir)/stack-build-caches\" /etc/postgrest.conf | grep postgrest | entr -r -- stack run /etc/postgrest.conf"]

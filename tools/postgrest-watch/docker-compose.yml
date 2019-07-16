@@ -4,17 +4,17 @@ services:
     image: fpco/stack-build
     user: ${HOST_UID}:${HOST_GID}
     working_dir: /home/pgrst-user/postgrest
-    entrypoint: /bin/bash
-    # entrypoint: stack build --file-watch
+    # entrypoint: /bin/bash
+    entrypoint: stack build --file-watch
     stdin_open: true
     tty: true
     networks:
       - pgrst-dev_network
     volumes:
       - pgrst-dev_passwd:/etc/
+      - pgrst-dev_stack:/home/pgrst-user/.stack
+      - pgrst-dev_stack-work:/home/pgrst-user/postgrest/.stack-work
       - ../../base/postgrest:/home/pgrst-user/postgrest
-      - ../../base/.stack:/home/pgrst-user/.stack
-      - ../../base/.stack-work:/home/pgrst-user/postgrest/.stack-work
 
 networks:
   pgrst-dev_network:
@@ -23,4 +23,8 @@ networks:
 
 volumes:
   pgrst-dev_passwd:
+    external: true
+  pgrst-dev_stack:
+    external: true
+  pgrst-dev_stack-work:
     external: true
