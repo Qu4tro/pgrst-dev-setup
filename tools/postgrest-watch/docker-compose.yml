@@ -4,7 +4,6 @@ services:
     image: fpco/stack-build
     user: ${HOST_UID}:${HOST_GID}
     working_dir: /home/pgrst-user/postgrest
-    # entrypoint: /bin/bash
     entrypoint: stack build --file-watch
     stdin_open: true
     tty: true
