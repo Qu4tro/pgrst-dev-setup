@@ -23,8 +23,11 @@ USER pgrst-user
 WORKDIR /home/pgrst-user/postgrest
 RUN stack build --only-dependencies
 
-COPY postgrest /home/pgrst-user/postgrest
+COPY postgrest/src /home/pgrst-user/postgrest/src
+COPY postgrest/main /home/pgrst-user/postgrest/main
 RUN sudo chown -R pgrst-user:pgrst-user .
 RUN stack build
 
+COPY postgrest /home/pgrst-user/postgrest
+RUN sudo chown -R pgrst-user:pgrst-user .
 ENTRYPOINT ["/bin/sh", "-c", "find \"$(stack path --dist-dir)/stack-build-caches\" /etc/postgrest.conf | grep postgrest | entr -r -- stack run /etc/postgrest.conf"]

@@ -1,0 +1,47 @@
+version: '2'
+services:
+  postgres:
+    image: postgres:latest
+    command: postgres -c log_statement=all
+    ports:
+      - "4999:5432"
+    environment:
+      - POSTGRES_USER=superuser
+      - POSTGRES_PASSWORD=superuserpass
+      - POSTGRES_DB=dbname
+
+    networks:
+      - pgrst-dev_network
+
+  test-watch:
+    image: fpco/stack-build
+    user: ${HOST_UID}:${HOST_GID}
+    working_dir: /home/pgrst-user/postgrest
+    entrypoint: /bin/bash
+    # entrypoint: stack build --file-watch --test --test-arguments '--rerun --failure-report=.TESTREPORT --rerun-all-on-success'
+    stdin_open: true
+    tty: true
+    depends_on:
+      - postgres
+    environment:
+      - POSTGREST_TEST_CONNECTION="postgres://superuser:superuserpass@postgres:5434"
+    networks:
+      - pgrst-dev_network
+    volumes:
+      - pgrst-dev_passwd:/etc/
+      - pgrst-dev_stack:/home/pgrst-user/.stack
+      - pgrst-test_stack-work:/home/pgrst-user/postgrest/.stack-work
+      - ./run.sh:/home/pgrst-user/postgrest/run-tests.sh
+      - ../../base/postgrest:/home/pgrst-user/postgrest
+
+networks:
+  pgrst-dev_network:
+    external: true
+
+
+volumes:
+  pgrst-dev_passwd:
+    external: true
+  pgrst-dev_stack:
+    external: true
+  pgrst-test_stack-work:
